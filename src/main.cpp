@@ -10,10 +10,19 @@
 namespace {
 
 void print(const barrycades::PrefixSumState& state) {
+  std::cout << "barrycade:\n"
+            << "  order: " << state.n() << '\n'
+            << "  height: " << state.height() << '\n'
+            << "  permutations:\n";
   for (const auto& row : state.perms()) {
+    std::cout << "    - [";
     for (size_t j = 0; j < row.size(); j++) {
-      std::cout << row[j] << (j + 1 == row.size() ? '\n' : ' ');
+      if (j > 0) {
+        std::cout << ", ";
+      }
+      std::cout << row[j];
     }
+    std::cout << "]\n";
   }
 }
 
