@@ -1,5 +1,0 @@
-corral:
-  order: 1
-  height: 1
-  permutations: [[1]]
-  shifts: [0]

@@ -1,4 +1,0 @@
-barrycade:
-  order: 2
-  height: 2
-  permutations: [[2, 1], [1, 2]]
