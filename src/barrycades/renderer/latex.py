@@ -16,11 +16,14 @@ class Format(Enum):
 
     pdf = (
         "\\documentclass[border=20pt]{standalone}",
-        (("latexmk", "-silent", "-pdflatex", "main"),),
+        (("latexmk", "-silent", "-lualatex", "main"),),
     )
     svg = (
-        "\\documentclass[dvisvgm]{minimal}",
-        (("latexmk", "-silent", "-dvi", "main"), ("dvisvgm", "main")),
+        "\\documentclass[dvisvgm,border=20pt]{standalone}",
+        (
+            ("latexmk", "-silent", "-dvilua", "main"),
+            ("dvisvgm", "--no-fonts", "--output=main.svg", "main.dvi"),
+        ),
     )
 
     documentclass: str
@@ -37,7 +40,7 @@ class Format(Enum):
         """What the commands leave behind in the scratch directory."""
         return f"main.{self.name}"
 
-    def document(self, tikz: str, preamble: str) -> str:
+    def document(self, tikz: str, preamble: str, options: str) -> str:
         """A standalone LaTeX document drawing the picture `tikz`."""
         return "\n".join(
             [
@@ -46,18 +49,18 @@ class Format(Enum):
                 "\\usetikzlibrary{fit,backgrounds,patterns}",
                 preamble,
                 "\\begin{document}",
-                "\\begin{tikzpicture}",
+                f"\\begin{{tikzpicture}}[{options}]",
                 tikz,
                 "\\end{tikzpicture}",
                 "\\end{document}",
             ]
         )
 
-    def build(self, tikz: str, preamble: str, path: pathlib.Path) -> None:
+    def build(self, tikz: str, preamble: str, options: str, path: pathlib.Path) -> None:
         """Compile `tikz` into `path`, in a scratch directory thrown away after."""
         with tempfile.TemporaryDirectory() as tmp:
             directory = pathlib.Path(tmp).resolve()
-            (directory / "main.tex").write_text(self.document(tikz, preamble))
+            (directory / "main.tex").write_text(self.document(tikz, preamble, options))
             for command in self.commands:
                 self.run(command, directory)
             self.collect(directory, path)
@@ -83,13 +86,15 @@ class Format(Enum):
                 f"`{' '.join(command)}` failed with exit code "
                 f"{completed.returncode}:\n{completed.stdout}"
             )
-        logger.debug(f"`{' '.join(command)}` succeeded")
+        logger.debug(f"`{' '.join(command)}` succeeded:\n{completed.stdout}")
 
     def collect(self, directory: pathlib.Path, path: pathlib.Path) -> None:
         """Move what the tools produced out of `directory` and into `path`."""
         product = directory / self.product
         if not product.exists():
+            left = sorted(item.name for item in directory.iterdir())
             raise RenderError(
-                f"LaTeX reported success but produced no `{self.product}`"
+                f"LaTeX reported success but produced no `{self.product}`, "
+                f"only {', '.join(left) or 'nothing'}"
             )
         shutil.move(product, path)

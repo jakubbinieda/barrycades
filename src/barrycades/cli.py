@@ -149,7 +149,10 @@ class Render(Command):
             path.write_text(renderer.render() + "\n")
         else:
             Format[args.mode].build(
-                renderer.render(), renderer.palette.preamble(), path
+                renderer.render(),
+                renderer.palette.preamble(),
+                renderer.options(),
+                path,
             )
         return 0
 

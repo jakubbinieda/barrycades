@@ -9,6 +9,8 @@ from ..exceptions import RenderError
 from ..stack import Stack
 from .palette import PALETTE, Palette
 
+MAX_SPAN = 480.0  # if the barrycade is wider, you may need to change this
+
 
 @dataclass(frozen=True)
 class Brick:
@@ -68,6 +70,11 @@ class TikzRenderer[F: Stack](ABC):
     def render(self) -> str:
         """The body of a TikZ picture drawing this stack."""
         return "\n".join(self.draw())
+
+    def options(self) -> str:
+        """Picture options keeping the drawing inside TeX's largest dimension."""
+        unit = min(1.0, MAX_SPAN / (self.stack.width + 2))
+        return f"x={unit:.6f}cm"
 
     def draw(self) -> Iterator[str]:
         yield "\\begin{scope}"

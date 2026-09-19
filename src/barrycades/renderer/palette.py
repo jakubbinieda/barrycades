@@ -54,7 +54,7 @@ PALETTE = Palette(
         "#0000aa",
         "#ffaa00",
         "#aa00ff",
-        "#ffaa00",
+        "#aaaaff",
         "#00ffaa",
         "#ff00aa",
         "#00aaff",
