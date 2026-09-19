@@ -122,3 +122,6 @@ uv manages the C++ part of the project for your convenience but it can also be r
 cmake -S src/solver -B build/cmake && cmake --build build/cmake
 ./build/cmake/barrycades-solve barrycade 7
 ```
+
+## Troubleshooting
+uv does not work well inside iCloud-synced folders. If this repository lives in one (e.g. Desktop), disable syncing for it - for example by placing it in a folder suffixed with `.nosync`.
