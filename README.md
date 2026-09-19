@@ -103,7 +103,7 @@ There are several ways to check our solutions and your own. Firstly, you can use
 
 ## Visualizations
 
-You can see visualizations [here](images/).
+You can find visualizations [here](images/).
 
 ## Repository structure
 
