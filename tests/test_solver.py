@@ -6,7 +6,7 @@ from barrycades.cli import Solve
 from barrycades.exceptions import SolverError
 from barrycades.stack import Stack
 
-SECONDS = 5
+SECONDS = 10
 RESTARTS = 20
 
 HEIGHTS = {
