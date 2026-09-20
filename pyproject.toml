@@ -1,0 +1,73 @@
+[project]
+name = "barrycades"
+version = "0.1.0"
+description = "Repository for the 'How to Construct High Barrycades' article"
+readme = "README.md"
+authors = [
+    { name = "Jakub Binięda", email = "jakub.binieda@student.uj.edu.pl" },
+    { name = "Michał Dębski", email = "michal.debski@pw.edu.pl" },
+    { name = "Grzegorz Gutowski", email = "grzegorz.gutowski@uj.edu.pl" },
+    { name = "Mateusz Milewski", email = "mateusz.milewski@student.uj.edu.pl" },
+]
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic>=2.13.5",
+    "pyyaml>=6.0.3",
+]
+
+[project.scripts]
+barrycades = "barrycades.cli:main"
+
+[build-system]
+requires = ["scikit-build-core>=0.11"]
+build-backend = "scikit_build_core.build"
+
+[tool.scikit-build]
+cmake.source-dir = "src/solver"
+wheel.packages = ["src/barrycades"]
+build-dir = "build/{wheel_tag}"
+
+[tool.uv]
+cache-keys = [
+    { file = "pyproject.toml" },
+    { file = "src/solver/CMakeLists.txt" },
+    { file = "src/solver/**/*.cpp" },
+    { file = "src/solver/**/*.hpp" },
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.4",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.16.7",
+    "ty>=0.0.81",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+markers = [
+    "claims: checks the paper's claims against the stored solutions",
+]
+
+[tool.coverage.run]
+source = ["barrycades"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+    "SIM", # flake8-simplify
+    "C4",  # flake8-comprehensions
+    "RET", # flake8-return
+    "PTH", # flake8-use-pathlib
+    "RUF", # ruff-specific
+    "ANN", # flake8-annotations
+]
+ignore = ["ANN401"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["barrycades", "stored"]

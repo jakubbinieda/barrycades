@@ -1,5 +1,0 @@
-corral:
-  order: 5
-  height: 3
-  permutations: [[4, 5, 2, 3, 1], [4, 1, 2, 5, 3], [1, 4, 3, 2, 5]]
-  shifts: [0, 1, 2]
