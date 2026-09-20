@@ -103,7 +103,30 @@ There are several ways to check our solutions and your own. Firstly, you can use
 
 ## Visualizations
 
-You can find visualizations [here](images/).
+Open [the construction gallery](gallery.html) in a browser to browse the SVG
+visualizations, filter by construction type or height, and inspect drawings at
+their native size. Matching YAML certificates are linked when available.
+Balanced status is computed using the package's certificate verifier. Expand
+“Inspect balance” to see a matrix of joint counts: a balanced construction has
+exactly one joint in every row/block cell. Missing certificates are marked
+“Balance not checked”. Invalid certificates stop generation with an error.
+The original drawings are in [images](images/).
+
+Regenerate the static gallery after adding or removing SVG files:
+
+```sh
+uv run python scripts/build_gallery.py
+```
+
+The script uses the installed `barrycades` package and recursively scans `images/`.
+It works from any working directory and writes `gallery.html` at the repository root
+by default. To choose different locations, use `--images PATH`, `--output PATH`,
+and `--certificates PATH`. Paths passed explicitly are relative to your working
+directory. Edit `scripts/gallery.html` to change the page's appearance.
+
+The gallery needs no server or internet connection. Keep the HTML, SVGs, and
+certificates in their relative locations when sharing or hosting it. Without
+JavaScript, all drawings and certificate links remain available.
 
 ## Repository structure
 
