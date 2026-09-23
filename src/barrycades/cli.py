@@ -4,12 +4,19 @@ import argparse
 import inspect
 import logging
 import pathlib
+import shutil
 import subprocess
 import sys
 from abc import ABC, abstractmethod
 from collections.abc import Sequence
 
-from .exceptions import BarrycadesError, InvalidStackError, SolverError
+from .exceptions import (
+    BarrycadesError,
+    InvalidStackError,
+    LatexmkNotFoundError,
+    PaperBuildError,
+    SolverError,
+)
 from .renderer.latex import Format
 from .renderer.tikz import TikzRenderer
 from .stack import Stack
@@ -157,6 +164,31 @@ class Render(Command):
         return 0
 
 
+class Paper(Command):
+    """Compile the paper in `paper/` into `paper/main.pdf`"""
+
+    @classmethod
+    def configure(cls, parser: argparse.ArgumentParser) -> None:
+        pass
+
+    @classmethod
+    def run(cls, args: argparse.Namespace) -> int:
+        directory = pathlib.Path(__file__).resolve().parents[2] / "paper"
+        if shutil.which("latexmk") is None:
+            raise LatexmkNotFoundError
+        completed = subprocess.run(
+            ["make"],
+            cwd=directory,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+        )
+        if completed.returncode != 0:
+            raise PaperBuildError(completed.returncode, completed.stdout)
+        print(directory / "main.pdf")
+        return 0
+
+
 class Verify(Command):
     """Check whether a stored stack is breakfree; with --balanced it is
     checked on balance as well and has to be both to pass"""
@@ -179,7 +211,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="barrycades")
     parser.add_argument("--debug", action="store_true")
     subparsers = parser.add_subparsers(dest="subcommand", required=True)
-    for command in [Build, Solve, Render, Verify]:
+    for command in [Build, Solve, Render, Verify, Paper]:
         command.add_to(subparsers)
 
     args = parser.parse_args(argv)

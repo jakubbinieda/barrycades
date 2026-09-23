@@ -76,5 +76,24 @@ class RenderError(BarrycadesError):
     """Turning a stack into TikZ source, a PDF or an SVG failed."""
 
 
+class LatexmkNotFoundError(BarrycadesError):
+    """`latexmk` is not on PATH, so the paper cannot be compiled."""
+
+    def __init__(self) -> None:
+        super().__init__(
+            "`latexmk` was not found on PATH, it is required to compile the paper"
+        )
+
+
+class PaperBuildError(BarrycadesError):
+    """`make` ran in `paper/` but did not produce the paper."""
+
+    def __init__(self, returncode: int, output: str) -> None:
+        self.returncode = returncode
+        super().__init__(
+            f"compiling the paper failed with exit code {returncode}:\n{output}"
+        )
+
+
 class SolverError(BarrycadesError):
     """The C++ solver could not be run, or ran without finding a stack."""
