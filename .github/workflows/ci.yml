@@ -38,11 +38,12 @@ jobs:
       - run: uv sync --locked
       - run: uv run pytest -m "not claims"
 
-  changes:
+  paper:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [lint, claims, tests]
     runs-on: ubuntu-latest
-    outputs:
-      paper: ${{ steps.filter.outputs.paper }}
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v5
       - uses: dorny/paths-filter@v3
@@ -52,20 +53,13 @@ jobs:
             paper:
               - 'paper/**'
               - '.github/workflows/ci.yml'
-
-  paper:
-    if: needs.changes.outputs.paper == 'true'
-    needs: [changes, lint, claims, tests]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v5
-      - uses: xu-cheng/latex-action@v3
+      - if: steps.filter.outputs.paper == 'true'
+        uses: xu-cheng/latex-action@v3
         with:
           root_file: main.tex
           working_directory: paper
-      - uses: softprops/action-gh-release@v2
+      - if: steps.filter.outputs.paper == 'true'
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: latest
           name: Latest paper build
