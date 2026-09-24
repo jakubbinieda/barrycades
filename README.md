@@ -1,6 +1,6 @@
 # How to Construct High Barrycades
 
-This repository is an artifact of the *How to Construct High Barrycades* article (available soon).
+This repository is an artifact of the [*How to Construct High Barrycades* article](https://arxiv.org/abs/2609.24373).
 
 The paper proves that constructions of certain kind exist and can be built; this repository lets you build them, check them, and draw them.
 
@@ -40,6 +40,16 @@ uv run barrycades --help
 Each of the constructing commands prints the result to stdout and everything else to stderr, so storing the output requires only a redirection to a file, i.e. `> output.yaml`
 
 Furthermore, `build` and `solve` can be run with the `--verify` flag to check if the result matches the constraints.
+
+### Building the paper
+The LaTeX sources are in `paper/`. Install a TeX distribution with `pdflatex`, BibTeX, and `latexmk`.
+The LIPIcs document class and figures are included in the repository.
+
+From the repository root, run:
+```sh
+uv run barrycades paper
+```
+The command builds `paper/main.pdf`.
 
 ### Build
 Build a barrycade or a corral of the given height according to the construction given in the paper. You can additionally pass a specific order rather than the minimal one that the construction defaults to.
@@ -109,6 +119,7 @@ You can find visualizations [here](images/).
 
 | Path | |
 | --- | --- |
+| `paper/` | The LaTeX sources of the paper |
 | `src/barrycades/` | the package: constructions, certificates, the command line |
 | `src/barrycades/renderer/` | the pictures renderer |
 | `certificates/` | the best constructions found, as certificates — corrals of height 1–50, barrycades of height 2–51 |
