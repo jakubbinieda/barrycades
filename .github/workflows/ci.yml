@@ -38,9 +38,24 @@ jobs:
       - run: uv sync --locked
       - run: uv run pytest -m "not claims"
 
-  paper:
+  changes:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [lint, claims, tests]
+    runs-on: ubuntu-latest
+    outputs:
+      paper: ${{ steps.filter.outputs.paper }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            paper:
+              - 'paper/**'
+              - '.github/workflows/ci.yml'
+
+  paper:
+    if: needs.changes.outputs.paper == 'true'
+    needs: [changes, lint, claims, tests]
     runs-on: ubuntu-latest
     permissions:
       contents: write
