@@ -38,6 +38,9 @@
 \definecolor{defblue}{rgb}{0.121,0.47,0.705}
 \DeclareTextFontCommand{\defterm}{\color{defblue}\itshape}
 \usetikzlibrary{fit,backgrounds,patterns}
+\tikzset{brick diagram/.style={
+    x=0.315cm, y=0.36cm, font=\fontsize{8}{9}\selectfont, inner sep=1pt
+}, compact brick diagram/.style={brick diagram, x=0.245cm}}
 % Leave a guide-free strip around each number for the full height of its brick.
 \newcounter{bricklabel}
 \newcommand{\bricklabel}[2]{%
@@ -51,7 +54,9 @@
     \begin{scope}
     \setcounter{bricklabel}{0}%
     \def\drawbrickguides{%
-        \begin{scope}[on background layer,even odd rule]
+        % Only the visible guides contribute to the bounding box.
+        \path (#2,-0.25) rectangle (#3,#4);
+        \begin{scope}[on background layer,even odd rule,overlay]
             \clip ({#2-0.5},-0.5) rectangle ({#3+0.5},{#4+0.5})
                 foreach \i in {1,...,\arabic{bricklabel}} {
                     (brick-label-\i.west |- brick-bottom-\i)
@@ -157,10 +162,8 @@ A barrycade is breakfree if no two bricks from different rows have left boundari
 
 \begin{figure}[ht]
     \centering
-    \begin{tikzpicture}[scale=0.5]
-        \begin{small}
+    \begin{tikzpicture}[brick diagram]
         \input{img/example_barrycade_4}
-        \end{small}
     \end{tikzpicture}
     \caption{A breakfree barrycade of height~\(h=3\) and order~\(n=4\) generates every proper partial sum from $1$ to $9$.}
     \label{fig:barrycade}
@@ -179,10 +182,8 @@ Similarly to the barrycade problem, it is conjectured that for every integer $h 
 
 \begin{figure}[ht]
     \centering
-    \begin{tikzpicture}[scale=0.5]
-        \begin{small}
+    \begin{tikzpicture}[brick diagram]
         \input{img/example_corral_6}
-        \end{small}
     \end{tikzpicture}
     \caption{A breakfree corral of height~\(h=3\) and order~\(n=6\) generates every possible cyclic partial sum from $0$ to $20$ except for $4$, $11$, and $18$.}
     \label{fig:corral}
@@ -266,8 +267,7 @@ It is \defterm{skewed} if it is both left-skewed and right-skewed.
 \paragraph{Mono Fence.}
 \begin{figure}[ht]
     \centering
-    \begin{tikzpicture}[scale=0.33]
-        \fontsize{6}{7}\selectfont
+    \begin{tikzpicture}[brick diagram]
         \input{img/fence_mono_7}
     \end{tikzpicture}
     \caption{The $8$-mono fence of height $7$.}
@@ -318,14 +318,12 @@ Consider the fence of height~$h$ and order~$n=2h$ described by the following des
 \begin{figure}[ht]
     \centering
     \subfloat[The base fence for $h=8$.\label{fig:corral_base_fence_even}]{%
-        \begin{tikzpicture}[scale=0.225]
-            \fontsize{6}{7}\selectfont
+        \begin{tikzpicture}[compact brick diagram, inner xsep=0.5pt]
             \input{img/construction_corral_base_16}
         \end{tikzpicture}%
     }\hfill
     \subfloat[The base fence for $h=7$.\label{fig:corral_base_fence_odd}]{%
-        \begin{tikzpicture}[scale=0.25]
-            \fontsize{6}{7}\selectfont
+        \begin{tikzpicture}[compact brick diagram, inner xsep=0.5pt]
             \input{img/construction_corral_base_14}
         \end{tikzpicture}%
     }
@@ -346,8 +344,7 @@ Observe the following properties of the base fence:
 \paragraph{Rotating Fence.}
 \begin{figure}[ht]
     \centering
-    \begin{tikzpicture}[scale=0.33]
-        \fontsize{6}{7}\selectfont
+    \begin{tikzpicture}[brick diagram]
         \input{img/construction_corral_rotating_16}
     \end{tikzpicture}
     \caption{The rotating fence for $h=8$.}
@@ -366,8 +363,7 @@ We are now ready to construct a breakfree corral of height~$h$ and order~$n=2h$ 
 \begin{proof}
 \begin{figure}[ht]
     \centering
-    \begin{tikzpicture}[scale=0.315]
-        \fontsize{6}{7}\selectfont
+    \begin{tikzpicture}[brick diagram]
         \input{img/construction_corral_8}
     \end{tikzpicture}
     \caption{A breakfree corral of order~\(n=8\) and height~\(h=4\).}
@@ -424,8 +420,7 @@ Finally, we reindex the remaining rows from $1$ to $h$, and set the shift $\tau_
 This gives us a fence of height~$h$ that we call the \defterm{base fence}.
 \begin{figure}[ht]
     \centering
-    \begin{tikzpicture}[scale=0.33]
-        \fontsize{6}{7}\selectfont
+    \begin{tikzpicture}[brick diagram]
         \input{img/construction_barrycade_base_19}
     \end{tikzpicture}
     \caption{The base fence for $h=8$.}
@@ -456,8 +451,7 @@ We are now ready to construct a breakfree barrycade of order~$n=2h+3$ and height
 \begin{proof}
 \begin{figure}[ht]
     \centering
-    \begin{tikzpicture}[scale=0.255]
-        \fontsize{6}{7}\selectfont
+    \begin{tikzpicture}[compact brick diagram]
         \input{img/construction_barrycade_9}
     \end{tikzpicture}
     \caption{A breakfree barrycade of order~\(n=9\) and height~\(h=3\).}
